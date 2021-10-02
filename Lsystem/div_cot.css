@@ -1,0 +1,40 @@
+body{
+    background-color: rgb(253, 253, 253);    
+}
+::-webkit-scrollbar{
+    display: none;
+}
+.cot{
+    background-color: rgb(241, 241, 241);
+    display: block;
+    padding-left: 20px;
+    padding-top: 10px;
+    z-index: 10000;
+    padding-bottom: 30px;
+}
+.cot h2,.cot h1,.cot p{
+    color: rgb(43, 43, 43);
+}
+.cot hr{
+    display: none;
+}
+.cot a{
+    color: rgb(94, 0, 78);
+}
+main{
+    display: block;
+    width: 100vw;
+    height: 100vh;
+}
+input{
+    background-color: rgb(226, 226, 226);
+    color: rgb(105, 105, 105);
+    border: 1px solid rgba(255,255,255,0.2);
+}
+button{
+    background-color: rgb(148, 148, 148);
+    color:rgb(20, 20, 20);
+    border:1px solid rgb(200,200,200);
+    border-radius: 2px;
+    margin-left: 5px;
+}

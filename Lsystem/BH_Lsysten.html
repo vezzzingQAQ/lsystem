@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../ico/ico1.jpg">
+    <title>Lsysten</title>
+    <link rel="stylesheet" type="text/css" href="div_cot.css">
+    <style>
+        body {
+        padding: 0;
+        margin: 0;
+        overflow-x: hidden;
+        }
+        .cet{
+            position: absolute;
+            left: 10px;
+            top: 10px;
+        }
+        .ban{
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(255, 255, 255, 0.904);
+            padding: 10px;
+        }
+        #init{
+            margin-left: 0;
+        }
+        .cot #output{
+            font-size: 1px;
+            width: 90vw;
+            margin: 10px auto;
+            height: 50vh;
+            overflow-y: scroll;
+        }
+        .small{
+            font-size: 9px;
+        }
+        ul{
+            font-size: 13px;
+        }
+        ul li{
+            font-size: 8px;
+        }
+    </style>
+    <script src="p5.min.js"></script>
+    <script>
+        var outputBox=null;
+        var lsystem=null;
+        window.onload=function(){
+            outputBox=document.querySelector("#output");
+            var buttonGenerate=document.querySelector("#generate");
+            var buttonInit=document.querySelector("#init");
+            buttonGenerate.onclick=function(){
+                var startRule=document.querySelector("#ruleStart");
+                var fromRule=document.querySelector("#ruleFrom");
+                var toRule=document.querySelector("#ruleTo");
+                var ruleFrom=fromRule.value;
+                var ruleTo=toRule.value;
+                var ruleStart=startRule.value;
+
+                background(245);
+                translate(width/2,height/2);
+                rotate(PI);
+                lsystem.len=width/220;
+                lsystem.theta=PI/2;
+                lsystem.generate(ruleFrom,ruleTo);
+                lsystem.display();
+            }
+            buttonInit.onclick=function(){
+                var startRule=document.querySelector("#ruleStart");
+                var fromRule=document.querySelector("#ruleFrom");
+                var toRule=document.querySelector("#ruleTo");
+                var ruleFrom=fromRule.value;
+                var ruleTo=toRule.value;
+                var ruleStart=startRule.value;
+
+                lsystem.init(ruleStart);
+                background(245);
+                outputBox.innerHTML="";
+            }
+        }
+        function Lsysten(start){
+            this.table="FG+-[]";
+            this.generation=0;
+            this.start=start;
+            this.currentString=start;
+            this.len=0;
+            this.theta=0;
+            this.init=function(currentStart){
+                this.start=currentStart;
+                this.currentString=currentStart;
+            }
+            this.generate=function(fromRule,toRule){
+                var textTemp="";//存放新的规则集
+                for(var i=0;i<this.currentString.length+1-fromRule.length;i++){
+                    if(this.currentString.substr(i,fromRule.length)==fromRule){
+                        textTemp+=toRule;
+                    }else{
+                        textTemp+=this.currentString.substr(i,1);
+                    }
+                }
+                this.currentString=textTemp;
+                outputBox.innerHTML="规则集:"+this.currentString;
+            }
+            this.display=function(){
+                stroke(1,60);
+                strokeWeight(0.5)
+                for(var i=0;i<this.currentString.length;i++){
+                   var currentChar=this.currentString.substr(i,1);
+                    if(currentChar=="F"){
+                        line(0,0,0,this.len);
+                        translate(0,this.len);
+                    }else if(currentChar=="G"){
+                        translate(this.len,0);
+                    }else if(currentChar=="P"){
+                        fill(1,20);
+                        circle(0,0,this.len/2);
+                    }else if(currentChar=="R"){
+                        fill(1,20);
+                        rectMode(CENTER);
+                        rect(0,0,this.len/2);
+                    }else if(currentChar=="{"){
+                        this.len++;
+                    }else if(currentChar=="}"){
+                        this.len--;
+                    }else if(currentChar=="<"){
+                        this.theta++;
+                    }else if(currentChar==">"){
+                        this.theta--;
+                    }else if(currentChar=="+"){
+                        rotate(this.theta);
+                    }else if(currentChar=="-"){
+                        rotate(-this.theta);
+                    }else if(currentChar=="["){
+                        push();
+                    }else if(currentChar=="]"){
+                        pop();
+                    }
+                }
+            }
+        }
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            smooth();
+            background(245);
+            translate(width/2,0);
+            lsystem=new Lsysten("F");
+        }
+        function windowResized() {
+            resizeCanvas(windowWidth,windowHeight);
+        }
+        function draw(){
+            
+        }
+    </script>
+    </head>
+
+    <body>
+    <main>
+    </main>
+    <div class="cot">
+        <h1>L系统</h1>
+        <hr>
+        <div class="ban">
+            <p>起始集合： <input id="ruleStart" value="F"></p>
+            <p>输入规则： <input id="ruleFrom" value="F"></p>
+            <p>输出规则： <input id="ruleTo" value="FF+[+F-F-F{P]-[-F+F+F]"></p>
+            <button id="init">init</button><button id="generate">generate</button><p class="small">下滑查看详情↓</p>
+        </div>
+        <hr>
+        <p><a href="https://baike.baidu.com/item/Lindenmayer%E7%B3%BB%E7%BB%9F/4347284?fromtitle=L%E7%B3%BB%E7%BB%9F&fromid=2365448&fr=aladdin" target="_blank">L系统介绍</a></p>
+        <ul>命令集:
+            <li>F:在当前方向画一条长度为一个长度单位的线段,并将作图点移到线段终点</li>
+            <li>G:将作图点移到长度为一个长度单位的线段终点</li>
+            <li>P:在作图点当前位置画一个半径为1/2长度单位的圆</li>
+            <li>R:在作图点当前位置画一个边长为1/2长度单位的正方形</li>
+            <li>{:长度单位+1</li>
+            <li>}:长度单位-1</li>
+            <li>+:作图点旋转1个角度单位</li>
+            <li>-:作图点旋转-1个角度单位</li>
+            <li>&#60;:角度单位+1</li>
+            <li>&#62;:角度单位-1</li>
+            <li>[:创建新的坐标变换(pushMatrix)</li>
+            <li>]:结束旧的坐标变换(popMatrix)</li>
+        </ul>
+        <p id="output"></p>
+
+        <hr>
+    </div>
+    </body>
+</html>
